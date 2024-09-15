@@ -65,25 +65,30 @@ instance Eq Hash where
 instance Ord Hash where
   compare a b = unsafePerformIO $ unsafeUseAsPtr2 a b Mutable.cmp
 
+instance Semigroup Hash where 
+  (<>) = concat
+
 instance Monoid Hash where
   mempty = unit
-  mappend = concat
   mconcat = concatAll
 
 -- | /O(n)/ Calculate the hash of the 'ByteString'. Alias for @('append' 'unit')@.
 hash :: ByteString -> Hash
 hash = append unit
+{-# inline[1] hash #-}
 
 -- | /O(n)/ Append the hash of the 'ByteString' to the existing 'Hash'.
 -- A significantly faster equivalent of @((. 'hash') . 'concat')@.
 append :: Hash -> ByteString -> Hash
 append h s = fst $ unsafePerformIO $ Mutable.withCopy h $ Mutable.append s
+{-# inline[1] append #-}
 {-# RULES "hash/concat" forall h s . concat h (hash s) = append h s #-}
 
 -- | /O(n)/ Prepend the hash of the 'ByteString' to the existing 'Hash'.
 -- A significantly faster equivalent of @('concat' . 'hash')@.
 prepend :: ByteString -> Hash -> Hash
 prepend s h = fst $ unsafePerformIO $ Mutable.withCopy h $ Mutable.prepend s
+{-# inline[1] prepend #-}
 {-# RULES "concat/hash" forall s h . concat (hash s) h = prepend s h #-}
 
 -- | /O(n)/ Append the hash of every 'ByteString' to the existing 'Hash', from left to right.
