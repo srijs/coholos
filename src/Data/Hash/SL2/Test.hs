@@ -24,6 +24,7 @@ instance Arbitrary B.ByteString where
 instance Arbitrary Hash where
   arbitrary = fmap hash arbitrary
 
+main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
@@ -41,7 +42,7 @@ tests = testGroup "Properties"
   , testGroup "compare"
 
     [ testProperty "eq" $
-        \a -> compare (hash a) (hash a) == EQ
+        \a -> hash a == hash a
 
     , testProperty "gt" $
         \a b c -> (a > b && b > c) ==> (a :: Hash) > c
@@ -95,13 +96,13 @@ tests = testGroup "Properties"
 
   , testGroup "append"
 
-    [ testGroup "single string" $
+    [ testGroup "single string"
 
       [ testProperty "equal to ((. hash) . concat)" $
           \a b -> ((. hash) . concat) a b == a `append` b
       ]
 
-    , testGroup "multiple strings" $
+    , testGroup "multiple strings"
 
       [ testProperty "equal to (foldl append)" $
           \a (b :: [B.ByteString]) -> foldl append a b == a `foldAppend` b
@@ -111,13 +112,13 @@ tests = testGroup "Properties"
 
   , testGroup "prepend"
 
-    [ testGroup "single string" $
+    [ testGroup "single string"
 
       [ testProperty "equal to (concat . hash)" $
           \a b -> (concat . hash) a b == a `prepend` b
       ]
 
-    , testGroup "multiple strings" $
+    , testGroup "multiple strings"
 
       [ testProperty "equal to (flip (foldr prepend)" $
           \(a :: [B.ByteString]) b -> foldr prepend b a == a `foldPrepend` b
