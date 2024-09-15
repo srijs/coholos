@@ -1,12 +1,11 @@
-module Data.Hash.SL2.Chunk where
+module Data.Hash.SL2.Chunk (Chunk(..), fromByteString) where
 
 import Data.ByteString
 import Data.Hash.SL2
-import Data.Monoid
 
 data Chunk = Chunk
-  { getChunkHash :: Hash
-  , getChunkBytes :: ByteString
+  { getChunkHash :: {-# unpack #-} !Hash
+  , getChunkBytes :: {-# unpack #-} !ByteString
   }
 
 instance Eq Chunk where
@@ -15,9 +14,11 @@ instance Eq Chunk where
 instance Ord Chunk where
   compare a b = compare (getChunkHash a) (getChunkHash b)
 
+instance Semigroup Chunk where
+  a <> b = Chunk (getChunkHash a <> getChunkHash b) (getChunkBytes a <> getChunkBytes b)
+
 instance Monoid Chunk where
   mempty = Chunk mempty mempty
-  mappend a b = Chunk (getChunkHash a <> getChunkHash b) (getChunkBytes a <> getChunkBytes b)
   mconcat as = Chunk (mconcat $ fmap getChunkHash as) (mconcat $ fmap getChunkBytes as)
 
 fromByteString :: ByteString -> Chunk
