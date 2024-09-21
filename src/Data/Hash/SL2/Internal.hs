@@ -12,29 +12,29 @@ newtype Hash = H (ForeignPtr ())
 hashSize = 64 :: Int
 hashLen = 86 :: Int
 
-foreign import capi "sl2-inl.h sl2_valid"
+foreign import capi unsafe "sl2-inl.h sl2_valid"
   valid :: Ptr Hash -> IO CInt
 
-foreign import capi "sl2-inl.h sl2_eq"
+foreign import capi unsafe "sl2-inl.h sl2_eq"
   eq :: Ptr Hash -> Ptr Hash -> IO CInt
 
-foreign import capi "sl2-inl.h sl2_cmp"
+foreign import capi unsafe "sl2-inl.h sl2_cmp"
   cmp :: Ptr Hash -> Ptr Hash -> IO CInt
 
-foreign import capi "sl2-inl.h sl2_unit"
+foreign import capi unsafe "sl2-inl.h sl2_unit"
   unit :: Ptr Hash -> IO ()
 
-foreign import capi "sl2-inl.h sl2_mul_buf_right"
+foreign import capi unsafe "sl2-inl.h sl2_mul_buf_right"
   append :: Ptr Hash -> Ptr CChar -> CSize -> IO ()
 
-foreign import capi "sl2-inl.h sl2_mul_buf_left"
+foreign import capi unsafe "sl2-inl.h sl2_mul_buf_left"
   prepend :: Ptr Hash -> Ptr CChar -> CSize -> IO ()
 
-foreign import capi "sl2-inl.h sl2_mul"
+foreign import capi unsafe "sl2-inl.h sl2_mul"
   concat :: Ptr Hash -> Ptr Hash -> Ptr Hash -> IO ()
 
-foreign import capi "sl2-inl.h sl2_serialize"
+foreign import capi unsafe "sl2-inl.h sl2_serialize"
   serialize :: Ptr Hash -> Ptr CChar -> IO ()
 
-foreign import capi "sl2-inl.h sl2_unserialize"
+foreign import capi unsafe "sl2-inl.h sl2_unserialize"
   unserialize :: Ptr Hash -> Ptr CChar -> IO ()

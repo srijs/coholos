@@ -28,4 +28,8 @@
 *.x86_64
 *.hex
 
+# stack
 .stack-work
+
+# cabal
+dist*
